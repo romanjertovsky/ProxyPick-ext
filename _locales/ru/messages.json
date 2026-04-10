@@ -1,0 +1,46 @@
+{
+  "extensionName": {
+    "message": "ПроксиПереключатель"
+  },
+  "extensionDescription": {
+    "message": "Простое переключение профиля прокси"
+  },
+  "popupTitle": {
+    "message": "ПроксиПереключатель"
+  },
+  "openOptions": {
+    "message": "Настройки"
+  },
+  "useSystemProxy": {
+    "message": "Использовать системный прокси"
+  },
+  "directConnection": {
+    "message": "Прямое подключение"
+  },
+  "optionsPageTitle": {
+    "message": "Настройки прокси"
+  },
+  "optionsHeading": {
+    "message": "Список прокси"
+  },
+  "proxyListHintHtml": {
+    "message": "Один прокси на строку:<br>ip:port<br>ip:port:user:password<br>Используйте # для комментариев."
+  },
+  "proxyListPlaceholder": {
+    "message": "1.1.1.1:1111 # дом\n2.2.2.2:2222:user:password # офис"
+  },
+  "saveButton": {
+    "message": "Сохранить"
+  },
+  "invalidFormatLine": {
+    "message": "Неверный формат в строке $LINE$",
+    "placeholders": {
+      "line": {
+        "content": "$1"
+      }
+    }
+  },
+  "savedStatus": {
+    "message": "Сохранено"
+  }
+}

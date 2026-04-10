@@ -1,0 +1,46 @@
+{
+  "extensionName": {
+    "message": "ProxyPick"
+  },
+  "extensionDescription": {
+    "message": "Simple proxy profile switching"
+  },
+  "popupTitle": {
+    "message": "ProxyPick"
+  },
+  "openOptions": {
+    "message": "Options"
+  },
+  "useSystemProxy": {
+    "message": "Use system proxy"
+  },
+  "directConnection": {
+    "message": "Direct connection"
+  },
+  "optionsPageTitle": {
+    "message": "Proxy Settings"
+  },
+  "optionsHeading": {
+    "message": "Proxy List"
+  },
+  "proxyListHintHtml": {
+    "message": "One proxy per line:<br>ip:port<br>ip:port:user:password<br>Use # for comments."
+  },
+  "proxyListPlaceholder": {
+    "message": "1.1.1.1:1111 # home\n2.2.2.2:2222:user:password # office"
+  },
+  "saveButton": {
+    "message": "Save"
+  },
+  "invalidFormatLine": {
+    "message": "Invalid format on line $LINE$",
+    "placeholders": {
+      "line": {
+        "content": "$1"
+      }
+    }
+  },
+  "savedStatus": {
+    "message": "Saved"
+  }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="optionsPageTitle">Proxy Settings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="options">
+  <main>
+    <h1 data-i18n="optionsHeading">Proxy List</h1>
+    <p class="hint" data-i18n-html="proxyListHintHtml">One proxy per line:<br>ip:port<br>ip:port:user:password<br>Use # for comments.</p>
+    <textarea
+      id="proxyList"
+      spellcheck="false"
+      data-i18n-placeholder="proxyListPlaceholder"
+      placeholder="1.1.1.1:1111 # home&#10;2.2.2.2:2222:user:password # office"></textarea>
+    <div class="actions">
+      <button id="saveButton" type="button" data-i18n="saveButton">Save</button>
+      <span id="status" role="status" aria-live="polite"></span>
+    </div>
+  </main>
+  <script src="i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
