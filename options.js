@@ -9,10 +9,51 @@ function splitComment(line) {
   };
 }
 
+function validateUriProxyLine(proxyPart) {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(proxyPart);
+  } catch {
+    return false;
+  }
+
+  const scheme = parsedUrl.protocol.slice(0, -1).toLowerCase();
+  if (!["http", "socks4", "socks5"].includes(scheme)) {
+    return false;
+  }
+
+  const host = parsedUrl.hostname?.trim();
+  const port = Number(parsedUrl.port);
+  const pathname = parsedUrl.pathname || "";
+  if (!host || !Number.isInteger(port) || port < 1 || port > 65535) {
+    return false;
+  }
+
+  if ((pathname && pathname !== "/") || parsedUrl.search || parsedUrl.hash) {
+    return false;
+  }
+
+  const hasUsername = parsedUrl.username.length > 0;
+  const hasPassword = parsedUrl.password.length > 0;
+  if (hasUsername !== hasPassword) {
+    return false;
+  }
+
+  if (scheme !== "http" && (hasUsername || hasPassword)) {
+    return false;
+  }
+
+  return true;
+}
+
 function validateProxyLine(line) {
   const { proxyPart } = splitComment(line);
   if (!proxyPart) {
     return false;
+  }
+
+  if (proxyPart.includes("://")) {
+    return validateUriProxyLine(proxyPart);
   }
 
   const parts = proxyPart.split(":");

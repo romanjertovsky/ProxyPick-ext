@@ -24,10 +24,10 @@
     "message": "Proxy List"
   },
   "proxyListHintHtml": {
-    "message": "One proxy per line:<br>ip:port<br>ip:port:user:password<br>Use # for comments."
+    "message": "One proxy per line:<br>http://ip:port<br>http://user:password@ip:port<br>socks4://ip:port<br>socks5://ip:port<br>Authentication is supported only for HTTP proxies.<br>Legacy formats ip:port and ip:port:user:password are treated as HTTP.<br>Use # for comments."
   },
   "proxyListPlaceholder": {
-    "message": "1.1.1.1:1111 # home\n2.2.2.2:2222:user:password # office"
+    "message": "http://user:password@1.1.1.1:1111 # home\nsocks5://2.2.2.2:1080 # office\n3.3.3.3:8080 # legacy HTTP"
   },
   "saveButton": {
     "message": "Save"

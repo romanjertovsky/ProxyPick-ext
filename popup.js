@@ -9,10 +9,59 @@ function splitComment(line) {
   };
 }
 
+function parseUriProxyLine(proxyPart, label) {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(proxyPart);
+  } catch {
+    return null;
+  }
+
+  const scheme = parsedUrl.protocol.slice(0, -1).toLowerCase();
+  if (!["http", "socks4", "socks5"].includes(scheme)) {
+    return null;
+  }
+
+  const host = parsedUrl.hostname?.trim();
+  const port = Number(parsedUrl.port);
+  const pathname = parsedUrl.pathname || "";
+  if (!host || !Number.isInteger(port) || port < 1 || port > 65535) {
+    return null;
+  }
+
+  if ((pathname && pathname !== "/") || parsedUrl.search || parsedUrl.hash) {
+    return null;
+  }
+
+  const hasUsername = parsedUrl.username.length > 0;
+  const hasPassword = parsedUrl.password.length > 0;
+  if (hasUsername !== hasPassword) {
+    return null;
+  }
+
+  if (scheme !== "http" && (hasUsername || hasPassword)) {
+    return null;
+  }
+
+  return {
+    scheme,
+    host,
+    port,
+    username: hasUsername ? decodeURIComponent(parsedUrl.username) : undefined,
+    password: hasPassword ? decodeURIComponent(parsedUrl.password) : undefined,
+    label
+  };
+}
+
 function parseProxyLine(line) {
+  const label = line.trim();
   const { proxyPart } = splitComment(line);
   if (!proxyPart) {
     return null;
+  }
+
+  if (proxyPart.includes("://")) {
+    return parseUriProxyLine(proxyPart, label);
   }
 
   const parts = proxyPart.split(":");
@@ -27,7 +76,7 @@ function parseProxyLine(line) {
   }
 
   if (parts.length === 2) {
-    return { host, port, label: line.trim() };
+    return { scheme: "http", host, port, label };
   }
 
   const username = parts[2]?.trim();
@@ -36,7 +85,7 @@ function parseProxyLine(line) {
     return null;
   }
 
-  return { host, port, username, password, label: line.trim() };
+  return { scheme: "http", host, port, username, password, label };
 }
 
 function normalizeMode(mode, activeProxy) {

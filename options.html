@@ -9,12 +9,12 @@
 <body class="options">
   <main>
     <h1 data-i18n="optionsHeading">Proxy List</h1>
-    <p class="hint" data-i18n-html="proxyListHintHtml">One proxy per line:<br>ip:port<br>ip:port:user:password<br>Use # for comments.</p>
+    <p class="hint" data-i18n-html="proxyListHintHtml">One proxy per line:<br>http://ip:port<br>http://user:password@ip:port<br>socks4://ip:port<br>socks5://ip:port<br>Authentication is supported only for HTTP proxies.<br>Legacy formats ip:port and ip:port:user:password are treated as HTTP.<br>Use # for comments.</p>
     <textarea
       id="proxyList"
       spellcheck="false"
       data-i18n-placeholder="proxyListPlaceholder"
-      placeholder="1.1.1.1:1111 # home&#10;2.2.2.2:2222:user:password # office"></textarea>
+      placeholder="http://user:password@1.1.1.1:1111 # home&#10;socks5://2.2.2.2:1080 # office&#10;3.3.3.3:8080 # legacy HTTP"></textarea>
     <div class="actions">
       <button id="saveButton" type="button" data-i18n="saveButton">Save</button>
       <span id="status" role="status" aria-live="polite"></span>
