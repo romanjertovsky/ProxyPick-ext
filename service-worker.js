@@ -6,6 +6,18 @@ const DEFAULT_STATE = {
 
 let currentAuth = null;
 const SUPPORTED_SCHEMES = new Set(["http", "socks4", "socks5"]);
+const ICON_SIZES = [16, 48, 128];
+const ICON_PATHS = {
+  16: "icons/icon16.png",
+  48: "icons/icon48.png",
+  128: "icons/icon128.png"
+};
+const MODE_COLORS = {
+  direct: "#2fb344",
+  system: "#f6c343",
+  proxy: "#e03131"
+};
+const iconCache = new Map();
 
 function splitComment(line) {
   const idx = line.indexOf("#");
@@ -109,6 +121,51 @@ function normalizeMode(mode, activeProxy) {
   return "direct";
 }
 
+function drawStatusLine(ctx, size, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(0, size - 4, size, 4);
+}
+
+async function createIconImageData(size, color) {
+  const response = await fetch(chrome.runtime.getURL(ICON_PATHS[size]));
+  const blob = await response.blob();
+  const bitmap = await createImageBitmap(blob);
+  const canvas = new OffscreenCanvas(size, size);
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(bitmap, 0, 0, size, size);
+  drawStatusLine(ctx, size, color);
+
+  bitmap.close?.();
+  return ctx.getImageData(0, 0, size, size);
+}
+
+async function getIconImageData(mode) {
+  if (iconCache.has(mode)) {
+    return iconCache.get(mode);
+  }
+
+  const color = MODE_COLORS[mode] || MODE_COLORS.direct;
+  const imageDataEntries = await Promise.all(
+    ICON_SIZES.map(async (size) => [size, await createIconImageData(size, color)])
+  );
+  const imageData = Object.fromEntries(imageDataEntries);
+
+  iconCache.set(mode, imageData);
+  return imageData;
+}
+
+async function updateActionIcon(mode) {
+  try {
+    await chrome.action.setIcon({
+      imageData: await getIconImageData(mode)
+    });
+  } catch (error) {
+    console.warn("Failed to update action icon", error);
+  }
+}
+
 async function getState() {
   const data = await chrome.storage.local.get(["proxies", "activeProxy", "connectionMode"]);
   const proxies = Array.isArray(data.proxies) ? data.proxies : DEFAULT_STATE.proxies;
@@ -127,6 +184,7 @@ async function applyCurrentProxy() {
   if (connectionMode === "system") {
     currentAuth = null;
     await chrome.proxy.settings.clear({ scope: "regular" });
+    await updateActionIcon("system");
     return;
   }
 
@@ -136,6 +194,7 @@ async function applyCurrentProxy() {
       value: { mode: "direct" },
       scope: "regular"
     });
+    await updateActionIcon("direct");
     return;
   }
 
@@ -145,6 +204,7 @@ async function applyCurrentProxy() {
       value: { mode: "direct" },
       scope: "regular"
     });
+    await updateActionIcon("direct");
     return;
   }
 
@@ -155,6 +215,7 @@ async function applyCurrentProxy() {
       value: { mode: "direct" },
       scope: "regular"
     });
+    await updateActionIcon("direct");
     return;
   }
 
@@ -181,6 +242,7 @@ async function applyCurrentProxy() {
     },
     scope: "regular"
   });
+  await updateActionIcon("proxy");
 }
 
 chrome.runtime.onInstalled.addListener(async (details) => {
